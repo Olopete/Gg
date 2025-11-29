@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CBT Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #5affef;
+            background-color: #111111
+        }
+
+        #question {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        #options {
+            margin-bottom: 20px;
+        }
+
+        #options label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #buttons {
+            margin-bottom: 20px;
+        }
+
+     
+        #buttons button {
+            margin-right: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            font-size: 20px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>CBT Test</h1>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="buttons">
+        <button id="prev-btn" style="display: none;">Previous</button>
+        <button id="next-btn">Next</button>
+        <button id="submit-btn" style="display: none;">Submit</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        // Questions and options
+        const questions = [
+            {
+                question: "What is the capital of Nigeria?",
+                options: ["Abuja", "Lagos", "Kabu", "Oyo"],
+                answer: "Abuja"
+            },
+            {
+                question: "What is the largest city in Nigeria?",
+                options: ["Lagos", "Abuja", "Kabu", "Oyo"],
+                answer: "Lagos"
+            },
+            {
+                question: "What is the official language of Nigeria?",
+                options: ["English", "Hausa", "Yoruba", "Igbo"],
+                answer: "English"
+            },
+            {
+                question: "What is the currency of Nigeria?",
+                options: ["Naira", "Dollar", "Pounds", "Euro"],
+                answer: "Naira"
+            },
+            {
+                question: "Who is the current president of Nigeria?",
+                options: ["Muhammadu Buhari", "Goodluck Jonathan", "Olusegun Obasanjo", "Yemi Osinbajo"],
+                answer: "Muhammadu Buhari"
+            }
+        ];
+
+        // Current question index
+        let currentQuestionIndex = 0;
+
+        // User answers
+        let userAnswers = [];
+
+        // Display current question
+        displayQuestion();
+
+        // Event listeners
+        document.getElementById("prev-btn").addEventListener("click", prevQuestion);
+        document.getElementById("next-btn").addEventListener("click", nextQuestion);
+        document.getElementById("submit-btn").addEventListener("click", submitTest);
+
+        // Functions
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+            const submitBtn = document.getElementById("submit-btn");
+
+            questionElement.innerHTML = question.question;
+            optionsElement.innerHTML = "";
+
+            question.options.forEach((option, index) => {
+                const label = document.createElement("label");
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "option";
+                radio.value = option;
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(option));
+                optionsElement.appendChild(label);
+            });
+
+            if (currentQuestionIndex === 0) {
+                prevBtn.style.display = "none";
+                nextBtn.style.display = "inline-block";
+                submitBtn.style.display = "none";
+            } else if (currentQuestionIndex === questions.length - 1) {
+                prevBtn.style.display = "inline-block";
+                nextBtn.style.display = "none";
+                submitBtn.style.display = "inline-block";
+            } else {
+                prevBtn.style.display = "inline-block";
+                nextBtn.style.display = "inline-block";
+                submitBtn.style.display = "none";
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector("input[name='option']:checked");
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion();
+                }
+            } else {
+                alert("Please select an option");
+            }
+        }
+
+        function submitTest() {
+            const selectedOption = document.querySelector("input[name='option']:checked");
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+            }
+
+            let score = 0;
+            questions.forEach((question, index) => {
+                if (question.answer === userAnswers[index]) {
+                    score++;
+                }
+            });
+
+            const resultElement = document.getElementById("result");
+            resultElement.innerHTML = `Your score is ${score} out of ${questions.length}`;
+        }
+    </script>
+</body>
+</html>
+
